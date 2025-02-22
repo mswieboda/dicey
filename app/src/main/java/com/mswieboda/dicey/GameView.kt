@@ -23,9 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mswieboda.dicey.ui.theme.DiceyTheme
 
+const val TOTAL_DICE = 5
+val DICE = listOf(1, 2, 3, 4, 5, 6)
+
 @Composable
 fun GameView(modifier: Modifier = Modifier) {
-    val dice = remember { mutableStateOf(listOf<Int>()) }
+    val diceState = remember { mutableStateOf(listOf<Int>()) }
 
     Column(modifier = modifier) {
         Row {
@@ -35,7 +38,7 @@ fun GameView(modifier: Modifier = Modifier) {
             )
         }
         Row {
-            Button(onClick = { rollDice(dice) }) {
+            Button(onClick = { rollDice(diceState) }) {
                 Text(
                     text = "Roll",
                     modifier = Modifier.padding(8.dp)
@@ -46,7 +49,7 @@ fun GameView(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            for (i in dice.value) {
+            for (i in diceState.value) {
                 Column(
                     modifier = Modifier
                         .background(color = Color(0xFFFFFFFF))
@@ -65,12 +68,10 @@ fun GameView(modifier: Modifier = Modifier) {
     }
 }
 
-fun rollDice(dice: MutableState<List<Int>>) {
-    if (dice.value.isEmpty()) {
-        dice.value = listOf(1, 2, 3, 4, 5, 6)
-    }
+fun rollDice(diceState: MutableState<List<Int>>) {
+    val dice = List(TOTAL_DICE) { DICE.random() }
 
-    dice.value = dice.value.shuffled()
+    diceState.value = dice.shuffled()
 }
 
 @Composable
