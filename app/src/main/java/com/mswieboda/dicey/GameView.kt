@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -21,9 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,7 +78,7 @@ fun DiceRowView(dice: List<Int>) {
             Column(
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF))
-                    .weight(0.5f)
+                    .weight(1f)
                     .border(
                         width = 1.dp,
                         brush = Brush.linearGradient(colors = listOf(Color.Black, Color.Black)),
@@ -101,15 +99,11 @@ fun DiceView(dice: Int) {
         contentAlignment = Alignment.Center
     ) {
         Image(
+            modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.pip_one),
-            contentDescription = "one pip",
-//            TODO: use string resource for this
-//            contentDescription = stringResource(R.string.image_description)
-//          TODO: get this size to work to scale the SVG, without pixelating
-            modifier = Modifier
-                .background(color = Color(0xFF00FF00))
-                .scale(5f) // TODO: this is pixelating it, not using vectors
-                .aspectRatio(1f)  // Maintain aspect ratio
+            contentDescription = "Scaled SVG",
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Fit
         )
         Text(
             text = dice.toString(),
