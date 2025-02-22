@@ -22,24 +22,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mswieboda.dicey.ui.theme.DiceyTheme
 
 const val TOTAL_DICE = 5
-val DICE = listOf(1, 2, 3, 4, 5, 6)
 
 @Composable
 fun GameView(modifier: Modifier = Modifier) {
-    val diceState = remember { mutableStateOf(listOf<Int>()) }
+    val diceState = remember { mutableStateOf(listOf<Die>()) }
 
     Column(modifier = modifier) {
         Header(onRollClick = { rollDice(diceState) })
         DiceRowView(diceState.value)
     }
+}
+
+fun rollDice(diceState: MutableState<List<Die>>) {
+    val dice = List(TOTAL_DICE) { Die.entries.random() }
+
+    diceState.value = dice.shuffled()
 }
 
 @Composable
@@ -62,19 +64,13 @@ fun Header(onRollClick: () -> Unit) {
     }
 }
 
-fun rollDice(diceState: MutableState<List<Int>>) {
-    val dice = List(TOTAL_DICE) { DICE.random() }
-
-    diceState.value = dice.shuffled()
-}
-
 @Composable
-fun DiceRowView(dice: List<Int>) {
+fun DiceRowView(dice: List<Die>) {
     Row(
         modifier = Modifier.padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        for (i in dice) {
+        for (die in dice) {
             Column(
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF))
@@ -86,30 +82,24 @@ fun DiceRowView(dice: List<Int>) {
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DiceView(i)
+                DieView(die)
             }
         }
     }
 }
 
 @Composable
-fun DiceView(dice: Int) {
+fun DieView(die: Die) {
     Box(
         modifier = Modifier.aspectRatio(ratio = 1.0f),
         contentAlignment = Alignment.Center
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.pip_one),
-            contentDescription = "Scaled SVG",
+            painter = die.painter(),
+            contentDescription = die.displaySymbol,
             alignment = Alignment.Center,
             contentScale = ContentScale.Fit
-        )
-        Text(
-            text = dice.toString(),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = Color(0xFFFF00FF)
         )
     }
 }
@@ -120,7 +110,7 @@ fun GameViewPreview() {
     DiceyTheme {
         Column {
             Header(onRollClick = {})
-            DiceRowView(listOf(3, 5, 1, 2, 6))
+            DiceRowView(List(TOTAL_DICE) { Die.entries.random() })
         }
     }
 }
