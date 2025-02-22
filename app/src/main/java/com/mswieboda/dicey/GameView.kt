@@ -31,38 +31,26 @@ fun GameView(modifier: Modifier = Modifier) {
     val diceState = remember { mutableStateOf(listOf<Int>()) }
 
     Column(modifier = modifier) {
-        Row {
+        Header(onRollClick = { rollDice(diceState) })
+        DiceRowView(diceState.value)
+    }
+}
+
+@Composable
+fun Header(onRollClick: () -> Unit) {
+    Row {
+        Column {
             Text(
                 text = "Dicey!",
                 modifier = Modifier.padding(8.dp)
             )
         }
-        Row {
-            Button(onClick = { rollDice(diceState) }) {
+        Column {
+            Button(onClick = onRollClick) {
                 Text(
                     text = "Roll",
                     modifier = Modifier.padding(8.dp)
                 )
-            }
-        }
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            for (i in diceState.value) {
-                Column(
-                    modifier = Modifier
-                        .background(color = Color(0xFFFFFFFF))
-                        .weight(0.5f)
-                        .border(
-                            width = 1.dp,
-                            brush = Brush.linearGradient(colors = listOf(Color.Black, Color.Black)),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    DiceView(i)
-                }
             }
         }
     }
@@ -72,6 +60,30 @@ fun rollDice(diceState: MutableState<List<Int>>) {
     val dice = List(TOTAL_DICE) { DICE.random() }
 
     diceState.value = dice.shuffled()
+}
+
+@Composable
+fun DiceRowView(dice: List<Int>) {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        for (i in dice) {
+            Column(
+                modifier = Modifier
+                    .background(color = Color(0xFFFFFFFF))
+                    .weight(0.5f)
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.linearGradient(colors = listOf(Color.Black, Color.Black)),
+                        shape = RoundedCornerShape(12.dp)
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                DiceView(i)
+            }
+        }
+    }
 }
 
 @Composable
@@ -88,6 +100,9 @@ fun DiceView(dice: Int) {
 @Composable
 fun GameViewPreview() {
     DiceyTheme {
-        GameView()
+        Column {
+            Header(onRollClick = {})
+            DiceRowView(listOf(3, 5, 1, 2, 6))
+        }
     }
 }
